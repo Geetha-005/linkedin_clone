@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+* text=auto
+
+* text eol=lf
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
