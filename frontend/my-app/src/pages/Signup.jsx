@@ -3,6 +3,7 @@ import logo from "../assets/logo.svg"
 import { useNavigate } from 'react-router-dom'
 import { authDataContext } from '../context/AuthContext'
 import axios from 'axios'
+import { userDataContext } from '../context/UserContext'
 const Signup = () => {
     let navigate=useNavigate()
     let [firstName,setFirstName]=useState("")
@@ -14,6 +15,7 @@ const Signup = () => {
     let [loading,setLoading]=useState(false)
     let [error,setError]=useState('')
   let {serverUrl}=useContext(authDataContext)
+  let {userData,setUserData}=useContext(userDataContext)
 
 
   const handleSignup=async(e)=>{
@@ -28,6 +30,8 @@ const Signup = () => {
           password
         },{withCredentials:true})
         console.log(result)
+        setUserData(result.data)
+        navigate("/")
         setLoading(false)
         setError('')
         setEmail("")
