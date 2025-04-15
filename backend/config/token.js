@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
 
-
-const genToken=async(userId)=>{
+const genToken=(userId)=>{
 
     try{
-        let token=await jwt.sign({userId},process.env.JWT_SECRET_KEY,{expiresIn:"7d"})
-        return token
+        return jwt.sign({userId},process.env.JWT_SECRET_KEY,{expiresIn:"7d"})
+        
     }
     catch(error){
         console.log(error)

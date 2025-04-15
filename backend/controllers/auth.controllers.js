@@ -26,6 +26,7 @@ export const signUp=async(req,res)=>{
         let hassPassword=await bcrypt.hash(password,10)
         const user=await User.create({firstName,lastName,userName,email,password:hassPassword})
         let token=genToken(user._id)
+        console.log("Generated token:", token);
        res.cookie("token",token,{
         httpOnly:true,
         maxAge:7*24*60*60*1000,
@@ -60,6 +61,7 @@ export const login=async(req,res)=>{
          }
         
         let token=genToken(user._id)
+        console.log("Generated token:", token);
        res.cookie("token",token,{
         httpOnly:true,
         maxAge:7*24*60*60*1000,
