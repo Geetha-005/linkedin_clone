@@ -1,16 +1,51 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import logo2 from '../assets/logo2.png'
 import { IoSearch } from "react-icons/io5";
 import { MdHome } from "react-icons/md";
 import { FaUsers } from "react-icons/fa6";
 import { IoIosNotifications } from "react-icons/io";
 import profile from "../assets/profile.jpeg"
+import { userDataContext } from '../context/UserContext';
+import { authDataContext } from '../context/AuthContext';
+import {useNavigate} from "react-router-dom"
+import axios from "axios"
+
+
 
 const NavBar = () => {
     let [activeSearch,setActiveSearch]=useState(false)
+    let[showProfile,setShowProfile]=useState(false)
+    // let[showPop,setShowpop]=useState(false)
+    let {userData,setUserData}=useContext(userDataContext)
+    let {serverUrl}=useContext(authDataContext)
+   let navigate=useNavigate()
+    const handleSignOut=async()=>{
+      try{
+        let result=await axios.get(serverUrl+"/api/auth/logout",{
+          withCredentials:true
+        })
+        setUserData(null)
+        navigate("/login")
+        console.log(result)
+      }
+      catch(error){
+        console.log(error)
+
+      }
+    }
+
+
+
+
+
+
   return (
     <div className='w-full h-[80px] bg-[white] fixed top-0 shadow-lg flex justify-between 
      md:justify-around items-center px-[10px]'>
+
+      {/* left side navbar */}
+
+
         <div className='flex justify-center items-center gap-[10px]'>
         <div onClick={()=>setActiveSearch(false)}>
        <img src={logo2} alt=""  className='w-[50px]'/>
@@ -31,19 +66,40 @@ const NavBar = () => {
        </form>
        </div>
 
-
+{/* pop area */}
        <div className='flex items-center justify-center gap-[20px] relative'>
-        <div className='w-[300px] h-[300px] bg-white shadow-lg absolute top-[75px] rounded-lg'>
 
+        {
+          showProfile  &&
+        
+        <div className='w-[300px] min-h-[300px] bg-white shadow-lg absolute top-[75px] rounded-lg items-center 
+        flex flex-col p-[20px] gap-[20px]'>
+        <div className='w-[70px] h-[70px] rounded-full overflow-hidden'>
+         <img src={profile} alt= "" className='w-full h-full' />
         </div>
+          
+          <div className='text-[19px] font-semibold text-gray-700 '>
+            {`${userData.firstName} ${userData.lastName}`}
+          </div>
+          <button className='w-[100%] h-[40px] rounded-full border-2 border-[#2dc0ff] text-[#2dc0ff]'>View Profile</button>
+         <div className='w-full h-[1px] bg-gray-700'></div>
+         <div className='flex  w-full gap-[10px] items-center justify-start text-gray-600 '>
+        <FaUsers className='w-[23px] h-[23px] text-gray-600' />
+        <div>My Network</div>
+        </div>
+        <button onClick={handleSignOut} className='w-[100%] h-[40px] rounded-full border-2 border-[#ec4545] text-[#ec4545s]'>Sign Out</button>
+       
+         
+      
+        </div>
+        
+
+        }
 
 
 
 
-
-
-
-
+       {/* right side navbar  */}
         <div className='lg:flex flex-col items-center justify-center text-gray-600 hidden' >
         <MdHome  className='w-[23px] h-[23px] text-gray-600' />
         <div>Home</div>
@@ -56,7 +112,8 @@ const NavBar = () => {
         <IoIosNotifications className='w-[23px] h-[23px] text-gray-600 sm:hidden' />
         <div className='hidden md:block'>Notification</div>
         </div>
-        <div className='w-[50px] h-[50px] rounded-full overflow-hidden'>
+
+        <div className='w-[50px] h-[50px] rounded-full overflow-hidden' onClick={()=>setShowProfile(!showProfile)}>
          <img src={profile} alt= "" className='w-full h-full' />
         </div>
        </div>
