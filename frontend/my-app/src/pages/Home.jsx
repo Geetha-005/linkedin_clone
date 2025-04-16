@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useContext, useState } from 'react'
 import NavBar from '../components/NavBar'
 import profile from "../assets/profile.jpeg"
@@ -7,6 +8,10 @@ import { userDataContext } from '../context/UserContext';
 import { HiPencil } from "react-icons/hi2";
 import EditProfile from '../components/EditProfile';
 
+=======
+import React from 'react'
+import NavBar from '../components/NavBar'
+>>>>>>> de1eaec143517e933e4274c5186b3fc4d2df8880
 
 const Home = () => {
 
@@ -14,6 +19,7 @@ const Home = () => {
   
 
   return (
+<<<<<<< HEAD
     <div className='w-full min-h-[100vh] bg-[#f0efe7] pt-[100px] flex items-start justify-center gap-[20px] 
     px-[20px] flex-col lg:flex-row'>
 
@@ -66,6 +72,10 @@ const Home = () => {
 
         </div>
 
+=======
+    <div className='w-full min-h-[100vh] bg-[#f3f2ec]'>
+        <NavBar />
+>>>>>>> de1eaec143517e933e4274c5186b3fc4d2df8880
     </div>
   )
 }

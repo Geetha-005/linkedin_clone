@@ -1,10 +1,15 @@
+<<<<<<< HEAD
 import React, { useContext, useState } from 'react'
+=======
+import React, { useState } from 'react'
+>>>>>>> de1eaec143517e933e4274c5186b3fc4d2df8880
 import logo2 from '../assets/logo2.png'
 import { IoSearch } from "react-icons/io5";
 import { MdHome } from "react-icons/md";
 import { FaUsers } from "react-icons/fa6";
 import { IoIosNotifications } from "react-icons/io";
 import profile from "../assets/profile.jpeg"
+<<<<<<< HEAD
 import { userDataContext } from '../context/UserContext';
 import { authDataContext } from '../context/AuthContext';
 import {useNavigate} from "react-router-dom"
@@ -46,6 +51,14 @@ const NavBar = () => {
       {/* left side navbar */}
 
 
+=======
+
+const NavBar = () => {
+    let [activeSearch,setActiveSearch]=useState(false)
+  return (
+    <div className='w-full h-[80px] bg-[white] fixed top-0 shadow-lg flex justify-between 
+     md:justify-around items-center px-[10px]'>
+>>>>>>> de1eaec143517e933e4274c5186b3fc4d2df8880
         <div className='flex justify-center items-center gap-[10px]'>
         <div onClick={()=>setActiveSearch(false)}>
        <img src={logo2} alt=""  className='w-[50px]'/>
@@ -66,6 +79,7 @@ const NavBar = () => {
        </form>
        </div>
 
+<<<<<<< HEAD
 {/* pop area */}
        <div className='flex items-center justify-center gap-[20px] relative'>
 
@@ -95,11 +109,25 @@ const NavBar = () => {
         
 
         }
+=======
+
+       <div className='flex items-center justify-center gap-[20px] relative'>
+        <div className='w-[300px] h-[300px] bg-white shadow-lg absolute top-[75px] rounded-lg'>
+
+        </div>
+>>>>>>> de1eaec143517e933e4274c5186b3fc4d2df8880
 
 
 
 
+<<<<<<< HEAD
        {/* right side navbar  */}
+=======
+
+
+
+
+>>>>>>> de1eaec143517e933e4274c5186b3fc4d2df8880
         <div className='lg:flex flex-col items-center justify-center text-gray-600 hidden' >
         <MdHome  className='w-[23px] h-[23px] text-gray-600' />
         <div>Home</div>
@@ -112,8 +140,12 @@ const NavBar = () => {
         <IoIosNotifications className='w-[23px] h-[23px] text-gray-600 sm:hidden' />
         <div className='hidden md:block'>Notification</div>
         </div>
+<<<<<<< HEAD
 
         <div className='w-[50px] h-[50px] rounded-full overflow-hidden' onClick={()=>setShowProfile(!showProfile)}>
+=======
+        <div className='w-[50px] h-[50px] rounded-full overflow-hidden'>
+>>>>>>> de1eaec143517e933e4274c5186b3fc4d2df8880
          <img src={profile} alt= "" className='w-full h-full' />
         </div>
        </div>

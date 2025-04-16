@@ -1,14 +1,20 @@
+<<<<<<< HEAD
 import React, { useContext, useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { userDataContext } from "../context/UserContext";
 import profile from "../assets/profile.jpeg";
 import { TiPlus } from "react-icons/ti";
 import { FiCamera } from "react-icons/fi";
+=======
+import React from 'react'
+import { RxCross2 } from "react-icons/rx"; 
+>>>>>>> de1eaec143517e933e4274c5186b3fc4d2df8880
 
 
 
 
 const EditProfile = () => {
+<<<<<<< HEAD
   let { edit, setEdit, userData, setUserData } = useContext(userDataContext);
   let [firstName,setFirstName]=useState(userData.firstName || "")
   let [lastName,setLastName]=useState(userData.lastName || "")
@@ -92,3 +98,19 @@ const EditProfile = () => {
 };
 
 export default EditProfile;
+=======
+  return (
+    <div className='w-full h-[100vh] fixed top-0 z-[100] flex justify-center items-center'>
+        <div className='w-full h-full bg-black opacity-[0.5] absolute'></div>
+      
+      <div className='w-[90%] max-w-[500px] h-[600px] bg-white relative  z-[200] shadow-lg rounded-lg '>
+         <div className='absolute top-[20px]  right-[20px]'>
+            <RxCross2 className='w-[25px] h-[25px] text-gray-800
+         font-bold'/></div>
+      </div>
+    </div>
+  )
+}
+
+export default EditProfile
+>>>>>>> de1eaec143517e933e4274c5186b3fc4d2df8880
