@@ -23,7 +23,7 @@ app.use("/api/user",userRouter)
 
 app.listen(port,()=>{
     connectDB()
-    console.log(`server is running ${port}`)
+    console.log(`server is running on the port number  ${port}`)
 })
 
 
