@@ -23,5 +23,6 @@ export const getCurrentUser=async(req,res)=>{
 
 
 export const updateProfile=async(req,res)=>{
+    const body=req.body;
 
 }
