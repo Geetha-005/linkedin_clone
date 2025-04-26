@@ -1,7 +1,5 @@
 import multer from "multer"
 
-const upload=multer({storage})
-
 
 let storage=multer.diskStorage({
     destination:(req,file,cb)=>{
@@ -11,5 +9,6 @@ let storage=multer.diskStorage({
         cb(null,file.originalname)
     }
 })
+const upload=multer({storage})
 
 export default upload
