@@ -1,14 +1,13 @@
-linked clone uisng merns stack:
+# linked clone uisng merns stack:
 
-frontend:
+# frontend:
 npm create vite@latest
 cd folder_name
 npm install
 npm axios react-router 
 npm run dev
 
-
-backend:
+# backend:
 npm init -y
 npm install express cors mongoose jwtwebtoken bcryptjs cookieparser
 
@@ -20,4 +19,3 @@ npm install express cors mongoose jwtwebtoken bcryptjs cookieparser
 3. posts uploading
 4. comments 
 5. connections
-6. 
