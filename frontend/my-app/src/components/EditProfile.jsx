@@ -1,12 +1,15 @@
 import React, { useContext, useRef, useState } from "react";
+import axios from "axios"
 import { RxCross2 } from "react-icons/rx";
 import { userDataContext } from "../context/UserContext";
 import profile from "../assets/profile.jpeg";
 import { TiPlus } from "react-icons/ti";
 import { FiCamera } from "react-icons/fi";
+import { authDataContext } from "../context/AuthContext";
 
 const EditProfile = () => {
   const { edit, setEdit, userData, setUserData } = useContext(userDataContext);
+  let {serverUrl}=useContext(authDataContext)
 
   const [firstName, setFirstName] = useState(userData.firstName || "");
   const [lastName, setLastName] = useState(userData.lastName || "");
@@ -29,6 +32,9 @@ const EditProfile = () => {
     description:""
 })
 
+let[frontendProfileImage,setFrontendProfileImage]=useState(userData.profileImage ||profile)
+let[backendProfileImage,setBackendProfileImage]=useState()
+let[frontendCoverImage,setFrontendCoverImage]=useState(userData.coverImage)
 const profileImage=useRef()
 const coverImage=useRef()
 
@@ -87,13 +93,62 @@ const coverImage=useRef()
     description:""
   });
     }
-  
 
+    function handleProfileImage(e){
+      let file=e.target.files[0]
+       setBackendProfileImage(file)
+       setFrontendProfileImage(URL.createObjectURL(file))
+
+    }
+
+    
+    function handleCoverImage(e){
+      let file=e.target.files[0]
+       setBackendProfileImage(file)
+       setFrontendCoverImage(URL.createObjectURL(file))
+
+    }
+  
+    const handleSaveProfile=async()=>{
+
+      try{
+        let formdata=new FormData()
+        formdata.append("firstName",firstName)
+        formdata.append("lastName",lastName)
+        formdata.append("userName",userName)
+        formdata.append("headline",headline)
+        formdata.append("skills",JSON.stringify(skills))
+        formdata.append("location",location)
+        formdata.append("education",JSON.stringify(education))
+        formdata.append("experience",JSON.stringify(experience))
+
+        if(frontendProfileImage){
+          formdata.append("profileImage",frontendProfileImage)
+        }
+        if(frontendCoverImage){
+          formdata.append("coverImage",frontendCoverImage)
+        }
+
+        let result=await axios.put(serverUrl+"/api/user/updateProfile",formdata,{
+          withCredentials:true,
+          headers: {
+            "Content-Type": "multipart/form-data", // very important for file uploads
+          },
+        })
+        console.log(result)
+
+
+      }
+      catch(error){
+        console.log(error)
+
+      }
+    }
 
   return (
     <div className="w-full h-[100vh] fixed top-0 z-[100] flex justify-center items-center">
-      <input type="file" accept="image/*" hidden ref={profileImage} />
-      <input type="file" accept="image/*" hidden ref={coverImage} />
+      <input type="file" accept="image/*" hidden ref={profileImage} onChange={handleProfileImage} />
+      <input type="file" accept="image/*" hidden ref={coverImage} onChange={handleCoverImage} />
       <div className="w-full h-full bg-black opacity-[0.5] absolute"></div>
 
       <div className="w-[90%] max-w-[500px] h-[600px] bg-white relative overflow-auto z-[200] shadow-lg rounded-lg p-[10px]">
@@ -106,13 +161,13 @@ const coverImage=useRef()
 
         <div className="w-full h-[150px] bg-gray-500 rounded-lg mt-[40px] overflow-hidden 
         " onClick={()=>coverImage.current.click()}>
-          <img src="" alt="" className="w-full" />
+          <img src={frontendCoverImage} alt="" className="w-full" />
           <FiCamera className="absolute right-[20px] top-[60px] w-[25px] h-[25px] text-white cursor-pointer" />
         </div>
 
         <div className="w-[80px] h-[80px] rounded-full overflow-hidden absolute top-[150px] ml-[20px]"
         onClick={()=>profileImage.current.click()}>
-          <img src={profile} alt="" className="w-full h-full" />
+          <img src={frontendProfileImage} alt="" className="w-full h-full" />
         </div>
 
         <div className="w-[20px] h-[20px] bg-[#17c1ff] absolute top-[200px] left-[90px] rounded-full flex justify-center items-center">
@@ -307,7 +362,7 @@ const coverImage=useRef()
            <button
             type="submit"
             className="w-[100%] h-[50px] rounded-full bg-[#2dc0ff] text-white font-semibold"
-          >
+           onClick={handleSaveProfile}>
             Save profile
           </button> 
 
