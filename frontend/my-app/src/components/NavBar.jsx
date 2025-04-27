@@ -59,7 +59,7 @@ const NavBar = () => {
         {showProfile &&
           <div className='w-[300px] min-h-[300px] bg-white shadow-lg absolute top-[75px] right-0 rounded-lg items-center flex flex-col p-[20px] gap-[20px] z-50'>
             <div className='w-[70px] h-[70px] rounded-full overflow-hidden'>
-              <img src={profile} alt="Profile" className='w-full h-full' />
+              <img src={userData.profileImage||profile} alt="Profile" className='w-full h-full' />
             </div>
 
             <div className='text-[19px] font-semibold text-gray-700'>
@@ -95,7 +95,7 @@ const NavBar = () => {
         </div>
 
         <div className='w-[50px] h-[50px] rounded-full overflow-hidden cursor-pointer' onClick={() => setShowProfile(!showProfile)}>
-          <img src={profile} alt="User" className='w-full h-full' />
+          <img src={userData.profileImage||profile} alt="User" className='w-full h-full' />
         </div>
       </div>
     </div>
