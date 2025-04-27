@@ -33,8 +33,10 @@ const EditProfile = () => {
 })
 
 let[frontendProfileImage,setFrontendProfileImage]=useState(userData.profileImage ||profile)
-let[backendProfileImage,setBackendProfileImage]=useState()
-let[frontendCoverImage,setFrontendCoverImage]=useState(userData.coverImage)
+let[backendProfileImage,setBackendProfileImage]=useState('')
+let[frontendCoverImage,setFrontendCoverImage]=useState(userData.coverImage||null)
+let[backendCoverImage,setBackendCoverImage]=useState('')
+let[saving,setSaving]=useState(false)
 const profileImage=useRef()
 const coverImage=useRef()
 
@@ -104,13 +106,13 @@ const coverImage=useRef()
     
     function handleCoverImage(e){
       let file=e.target.files[0]
-       setBackendProfileImage(file)
+       setBackendCoverImage(file)
        setFrontendCoverImage(URL.createObjectURL(file))
 
     }
   
     const handleSaveProfile=async()=>{
-
+       setSaving(true)
       try{
         let formdata=new FormData()
         formdata.append("firstName",firstName)
@@ -123,19 +125,24 @@ const coverImage=useRef()
         formdata.append("experience",JSON.stringify(experience))
 
         if(frontendProfileImage){
-          formdata.append("profileImage",frontendProfileImage)
+          formdata.append("profileImage",backendProfileImage)
         }
         if(frontendCoverImage){
-          formdata.append("coverImage",frontendCoverImage)
+          formdata.append("coverImage",backendCoverImage)
         }
 
         let result=await axios.put(serverUrl+"/api/user/updateProfile",formdata,{
           withCredentials:true,
-          headers: {
-            "Content-Type": "multipart/form-data", // very important for file uploads
-          },
+          // headers: {
+          //   "Content-Type": "multipart/form-data", // very important for file uploads
+          // },
         })
-        console.log(result)
+        console.log("Response status:", result.status);
+        setUserData(result.data)
+        setSaving(false)
+        setEdit(false)
+        
+
 
 
       }
@@ -149,11 +156,11 @@ const coverImage=useRef()
     <div className="w-full h-[100vh] fixed top-0 z-[100] flex justify-center items-center">
       <input type="file" accept="image/*" hidden ref={profileImage} onChange={handleProfileImage} />
       <input type="file" accept="image/*" hidden ref={coverImage} onChange={handleCoverImage} />
-      <div className="w-full h-full bg-black opacity-[0.5] absolute"></div>
+      <div className="w-full h-full bg-black opacity-[0.5] absolute top-0 left-0" ></div>
 
       <div className="w-[90%] max-w-[500px] h-[600px] bg-white relative overflow-auto z-[200] shadow-lg rounded-lg p-[10px]">
         <div
-          className="absolute top-[10px] right-[20px] cursor-pointer"
+          className="absolute top-[20px] right-[20px] cursor-pointer"
           onClick={() => setEdit(false)}
         >
           <RxCross2 className="w-[30px] cursor-pointer h-[25px] text-gray-800 font-bold" />
@@ -361,9 +368,10 @@ const coverImage=useRef()
           </div>
            <button
             type="submit"
-            className="w-[100%] h-[50px] rounded-full bg-[#2dc0ff] text-white font-semibold"
+            className="w-[100%] h-[50px] rounded-full bg-[#2dc0ff] text-white font-semibold"   
+            disabled={saving}
            onClick={handleSaveProfile}>
-            Save profile
+            {saving ?"saving ..." :"Save profile"}
           </button> 
 
 
