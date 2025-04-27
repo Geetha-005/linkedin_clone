@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useRef, useState } from "react";
 import NavBar from "../components/NavBar";
 import profile from "../assets/profile.jpeg";
 import { TiPlus } from "react-icons/ti";
@@ -13,7 +13,17 @@ import { BsImage } from "react-icons/bs";
 
 const Home = () => {
   let { userData, setUserData, setEdit, edit } = useContext(userDataContext);
+  let [frontendImage,setFrontendImage]=useState("")
+  let [backendImage,setBackendImage]=useState("")
+ let [description,setDescription]=useState("")
+ let[uploadPost,setUploadPost]=useState(false)
+ let  image=useRef()
+ function handleImage(e){
+  let file=e.target.files[0]
+  setBackendImage(file)
+  setFrontendImage(URL.createObjectURL(file))
 
+ }
   return (
     <div className="w-full min-h-[100vh] bg-[#f0efe7] pt-[100px] relative flex items-start justify-center gap-[20px] px-[20px] flex-col lg:flex-row">
       {edit && <EditProfile />}
@@ -65,12 +75,15 @@ const Home = () => {
         </button>
       </div>
 
-      <div className="w-full h-full bg-black absolute z-[100] top-0 opacity-[0.7] left-0"></div>
+     {uploadPost &&
+      <div className="w-full h-full bg-black absolute z-[100] top-0 opacity-[0.7] left-0">
+        </div>}
 
+          {uploadPost && 
       <div className="w-[90%] max-w-[500px] h-[600px] bg-white shadow-lg rounded-lg absolute z-[200] p-[20px]
       flex items-start justify-start flex-col gap-[20px] ">
         <div className="absolute top-[10px] right-[20px] cursor-pointer">
-          <RxCross2 className="w-[30px] cursor-pointer h-[25px] text-gray-800 font-bold" />
+          <RxCross2 className="w-[30px] cursor-pointer h-[25px] text-gray-800 font-bold" onClick={()=>setUploadPost(false)}/>
         </div>
        <div className="flex justify-start items-center gap-[10px] ">
         <div
@@ -87,18 +100,31 @@ const Home = () => {
             userData?.lastName || ""
           }`}</div>
         </div>
-        <textarea className="w-full h-[200px] outline-none border-none p-[10px] 
-        resize-none text-[19px] bg-slate-500 " placeholder="what to you want to talk about ...?">
-
+        <textarea className={`w-full ${frontendImage ?"h-[200px]":"h-[550px]"} outline-none border-none p-[10px] 
+        resize-none text-[19px]`} placeholder="what to you want to talk about ...?"  value={description}
+        onChange={(e)=>setDescription(e.target.value)}>
         </textarea>
+        
+        <input type="file" ref={image} hidden onChange={handleImage} />
+          <div className="w-full h-[300px] overflow-hidden">
+            <img src={frontendImage||""} alt="" className="h-full" />
+          </div>
 
         <div className="w-full h-[200px] flex flex-col">
-          <div className="p-[20px] flex items-center justify-start">
-          <BsImage className="w-[24px] h-[24px] text-gray-500"/>
+          <div className="p-[20px] flex items-center justify-start border-b-2 border-gray-500">
+          <BsImage className="w-[24px] h-[24px] text-gray-500" onClick={()=>image.current.click()}/>
           </div>
-          <div></div>
+
+
+          <div className="flex justify-end items-center" >
+            <button className="w-[100px] h-[50px] rounded-full bg-[#2dc0ff] text-white font-semibold" 
+            >
+             Post
+            </button>
+          
+          </div>
         </div>
-      </div>
+      </div>}
 
       {/* Middle Section */}
       <div className="w-full lg:w-[50%] min-h-[200px] bg-bg-[#f0efe7] ">
@@ -117,7 +143,7 @@ const Home = () => {
           <button
             className="w-[80%] h-[60%] border-2 border-gray-500 rounded-full
         flex items-center justify-start px-[20px] hover:bg-gray-200 "
-          >
+          onClick={()=>setUploadPost(true)}>
             start a post
           </button>
         </div>
