@@ -185,7 +185,7 @@ const Home = () => {
         </div>
         {postData .map((post,index)=>(
               <Post  key={index} id={post._id} description={post.description} image={post.image}
-              author={post.author} like={post.like} comment={post.comment}  createdAt={post.createdAt}  /> 
+              author={post.author} like={post.like} comment={post.comments}  createdAt={post.createdAt}  /> 
         ))}
         
       </div>

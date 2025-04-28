@@ -48,7 +48,7 @@ const UserContext = ({ children }) => {
         setEdit,
         edit,
         setUserData,
-        postData,setPostData
+        postData,setPostData,getPost
     }
 
     return (
