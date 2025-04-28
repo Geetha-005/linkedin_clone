@@ -5,6 +5,7 @@ import authRouter from './routes/auth.routes.js'
 import cookieParser from 'cookie-parser';
 import cors from 'cors'
 import userRouter from './routes/user.routes.js';
+import postRouter from './routes/post.routes.js';
 
 dotenv.config()
 
@@ -20,6 +21,7 @@ app.use(cors({
 }))
 app.use("/api/auth",authRouter)
 app.use("/api/user",userRouter)
+app.use("/api/post",postRouter)
 
 app.listen(port,()=>{
     connectDB()
