@@ -8,7 +8,11 @@ import axios from "axios";
 import { userDataContext } from "../context/UserContext";
 import { BiSolidLike } from "react-icons/bi";
 import { LuSendHorizontal } from "react-icons/lu";
+import {io} from "socket.io-client"
+import ConnectioButton from "./ConnectioButton";
 
+
+let socket=io("http://localhost:8000")
 const Post = ({ id, author, like, comment, description, image, createdAt }) => {
   let [more, setMore] = useState(false);
   let [likes, setLikes] = useState(like || []);
@@ -50,6 +54,27 @@ const Post = ({ id, author, like, comment, description, image, createdAt }) => {
     }
   };
 
+  useEffect(()=>{
+    socket.on("likeUpdated",({postId,likes})=>{
+      if(postId==id){
+        setLikes(likes)
+
+      }
+    })
+
+    socket.on("commentAdded",({postId,comm})=>{
+      if(postId==id){
+        setComments(comm)
+
+      }
+    })
+     return ()=>{
+      socket.off("likeUpdated")
+      socket.off("commentAdded")
+     }
+  },[id])
+
+
   useEffect(() => {
     getPost();
   }, [likes, setLikes,comments]);
@@ -76,7 +101,13 @@ const Post = ({ id, author, like, comment, description, image, createdAt }) => {
           </div>
         </div>
 
-        <div>{/* button */}</div>
+        <div>{/* button */}
+          {
+            userData._id!=author._id &&
+          
+          <ConnectioButton  userId={author._id} />
+          }
+        </div>
       </div>
       {/* description */}
       <div

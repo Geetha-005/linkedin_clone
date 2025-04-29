@@ -1,7 +1,9 @@
-import Connection from "../models/connections.model"
-import User from "../models/user.model"
+import Connection from "../models/connections.model.js"
+import User from "../models/user.model.js"
+import {io,userSocketMap} from "../index.js"
 
-export const sendConnection =async(req,res)=>{
+
+export const sendConnection =async(req,res)=>{ 
 
     try{
         let {id}=req.params
@@ -16,7 +18,8 @@ export const sendConnection =async(req,res)=>{
     return res.status(400).json({message:"you are already connected this user"})
 }
    let existingConnection=await Connection.findOne({
-    sender,receiver:id,
+    sender,
+    receiver:id,
     status:"pending"
    })
    if(existingConnection){
@@ -27,7 +30,18 @@ export const sendConnection =async(req,res)=>{
     receiver:id,
 
    })
+      
+   let receiverSocketId=userSocketMap.get(id)
+   let senderSocketId=userSocketMap.get(sender)
+   
+   if(receiverSocketId){
+    io.to(receiverSocketId).emit("statusUpdate",{updatedUserId:sender,newStatus:"received"})
+   }
 
+   if(senderSocketId){
+    io.to(senderSocketId).emit("statusUpdate",{updatedUserId:id,newStatus:"pending"})
+   }
+     
    return res.status(200).json(newRequest)
     }
 
@@ -57,6 +71,18 @@ export const acceptConnection=async(req,res)=>{
         await User.findByIdAndUpdate(connection.sender._id,{
             $addToSet:{connection:connection.sender._id}
         })
+
+
+    let receiverSocketId=userSocketMap.get(connection.receiver._id.toString())
+   let senderSocketId=userSocketMap.get(connection.sender._id.toString())
+   
+   if(receiverSocketId){
+    io.to(receiverSocketId).emit("statusUpdate",{updatedUserId:connection.sender._id,newStatus:"disconnect"})
+   }
+
+   if(senderSocketId){
+    io.to(senderSocketId).emit("statusUpdate",{updatedUserId:req.userId,newStatus:"disconnect"})
+   }
 
         return res.status(200).json({message:"connection accepted"})
 
@@ -95,4 +121,102 @@ export const rejectConnection=async(req,res)=>{
 
     } 
 
+}
+export const getConnectionStatus=async(req,res)=>{
+
+    try{
+        const targetUserId=req.params.userId
+        const currentUserId=req.userId
+
+        let currentUser=await User.findById(currentUserId)
+        if(currentUser.connection.includes(targetUserId)){
+            return res.json({status:"disconnect"})
+
+        }
+        const pendingRequest=await Connection.findOne({
+            $or:[
+                {
+                    sender:currentUserId,receiver:targetUserId
+                },
+                {
+                    sender:targetUserId,receiver:currentUserId
+                }
+            ],
+            status:"pending",
+        })
+        if(pendingRequest){
+            if(pendingRequest.sender.toString()===currentUserId.toString()){
+                return res.json({status:"pending"})
+            }
+            else{
+                return res.json({status:"received",requestId:pendingRequest._id})
+            }
+        }
+        return res.json({status:"Connect"})
+
+
+    }
+    catch(error){
+        return res.status(500).json({message:"getConnection error"})
+    }
+
+}
+
+export const removeConnection=async(req,res)=>{
+    try{
+        const myId=req.userId
+        const otherUserId=req.params.userId
+        await User.findByIdAndUpdate(myId,{$pull:{connection:otherUserId}})
+        await User.findByIdAndUpdate(otherUserId,{$pull:{connection:myId}})
+
+        let receiverSocketId=userSocketMap.get(otherUserId)
+        let senderSocketId=userSocketMap.get(myId)
+        
+        if(receiverSocketId){
+         io.to(receiverSocketId).emit("statusUpdate",{updatedUserId:myId,newStatus:"connect"})
+        }
+     
+        if(senderSocketId){
+         io.to(senderSocketId).emit("statusUpdate",{updatedUserId:otherUserId,newStatus:"connect"})
+        }
+
+
+       return res.json({message:"Connection removed successfully"})
+    }
+    catch(error){
+        res.status(500).json({message:"remove Connection error"})
+    }
+}
+
+export const getConnectionRequests=async(req,res)=>{
+
+    try{
+        const userId=req.userId
+        const requests=await Connection.find({receiver:userId,status:"pending"}).
+        populate("sender","firstName lastName email userName profileImage headline")
+
+       return res.status(200).json({requests})
+    }
+    catch(error){
+        console.log("error in  getConnectionRequests controller:",error)
+        return res.status(500).json({message:"sever error"})
+
+    }
+}
+
+
+export const getUserConnections=async(req,res)=>{
+
+    try{
+        const userId=req.userId
+        const user=await User.findById(userId).
+        populate("connection","firstName lastName connection userName profileImage headline")
+
+       return res.status(200).json(user.connection)
+    }
+    catch(error){
+        console.log("error in  getUserConnections controller:",error)
+        return res.status(500).json({message:"sever error"})
+
+    }
 }
