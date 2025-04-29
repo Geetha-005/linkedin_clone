@@ -14,6 +14,7 @@ const Post = ({ id, author, like, comment, description, image, createdAt }) => {
   let [likes, setLikes] = useState(like || []);
   let[comments,setComments]=useState(comment||[])
   let [commentContent,setCommentContent]=useState("")
+  let[showComment,setShowContent]=useState(false)
 
   let { serverUrl } = useContext(authDataContext);
   let { userData, setUserData, getPost } = useContext(userDataContext);
@@ -51,7 +52,7 @@ const Post = ({ id, author, like, comment, description, image, createdAt }) => {
 
   useEffect(() => {
     getPost();
-  }, [likes, setLikes]);
+  }, [likes, setLikes,comments]);
 
   return (
     <div className="w-full min-h-[200px] bg-white rounded-lg shadow-lg p-[20px] flex flex-col gap-[10px]">
@@ -110,8 +111,8 @@ const Post = ({ id, author, like, comment, description, image, createdAt }) => {
           </div>
 
           {/* comment */}
-          <div className="flex items-center justify-center gap-[5px] text-[18px] ">
-            <span>{comment.length}</span>
+          <div className="flex items-center justify-center gap-[5px] text-[18px] cursor-pointer" onClick={()=>setShowContent(prev=>!prev)}>
+            <span>{comments.length}</span>
             <span>Comment</span>
           </div>
         </div>
@@ -141,11 +142,14 @@ const Post = ({ id, author, like, comment, description, image, createdAt }) => {
                 <span>{likes.includes(userData._id)?"Liked":"Like"}</span>
             </div> */}
 
-          <div className="flex justify-center items-center gap-[5px]">
+          <div className="flex justify-center items-center gap-[5px] cursor-pointer" onClick={()=>setShowContent(prev=>!prev)}>
             <FaRegCommentDots className="w-[24px] h-[24px]" />
             <span>Comment</span>
           </div>
         </div>
+
+        {showComment &&
+
         <div>
             <form className="w-full flex justify-between items-center border-b-2 border-b-gray-300 p-[10px]"
             onSubmit={handleComment}>
@@ -153,8 +157,28 @@ const Post = ({ id, author, like, comment, description, image, createdAt }) => {
                 onChange={(e)=>setCommentContent(e.target.value)} value={commentContent} />
                 <button><LuSendHorizontal className="text-[#07a4ff] w-[22px]"/></button>
             </form>
-            <div>comment</div>
-        </div>
+            <div className="flex flex-col gap-[10px]">
+            {comments.map((com)=>(
+              <div  key={com._id} className="flex flex-col gap-[10px] border-b-2 border-b-gray-300 p-[10px]"> 
+                <div className="w-full flex justify-start items-center gap-[20px] ">
+                <div className="w-[70px] h-[70px] rounded-full overflow-hidden flex items-center justify-center  cursor-pointer">
+            <img
+              src={com.user.profileImage || profile}
+              alt=""
+              className="h-full"
+            />
+          </div>
+          <div>
+          <div className="text-[22px] font-semibold">{`${com.user.firstName} ${com.user.lastName}`}</div>
+          <div>{moment(com.createdAt).fromNow()}</div>
+          </div>
+
+                 </div>
+                 <div className="pl-[50px]">{com.content}</div>
+              </div>
+            ))}
+            </div>
+        </div>}
       </div>
     </div>
   );
