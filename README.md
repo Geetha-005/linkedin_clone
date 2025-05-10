@@ -19,3 +19,5 @@ npm install express cors mongoose jwtwebtoken bcryptjs cookieparser
 3. posts uploading
 4. comments 
 5. connections
+6. live interactions using socket.io
+7. like and unlike 
