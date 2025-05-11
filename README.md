@@ -5,11 +5,13 @@ npm create vite@latest
 cd folder_name
 npm install
 npm axios react-router 
+npm i socket.io-client
 npm run dev
 
 # backend:
 npm init -y
 npm install express cors mongoose jwtwebtoken bcryptjs cookieparser
+npm i socket.io
 
 # the above mentioned the setup required technologies to build the linkedin clone
 
