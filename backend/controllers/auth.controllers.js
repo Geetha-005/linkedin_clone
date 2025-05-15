@@ -86,3 +86,50 @@ export const logOut=async(req,res)=>{
         return res.status(500).json({message:"logout error"})
     }
 }
+
+export const Home=async(req,res)=>{
+
+    try{
+        const result=req.body
+        return res.send(result)
+
+    }
+    catch(error){
+        console.log(error)
+    }
+}
+
+
+
+// export const GetData=async(req,res)=>{
+
+//     try{
+//         const ress=res.body
+//         return res(ress)
+//     }
+//     catch(error){
+//         console.log(error)
+//     }
+// }
+
+
+export const About=async(req,res)=>{
+
+    try{
+        res.send("this is about page route")
+
+    }
+    catch(error){
+        console.log(error)
+    }
+}
+export const Contact=async(req,res)=>{
+
+    try{
+        res.send("this is contach page route")
+
+    }
+    catch(error){
+        console.log(error)
+    }
+}
